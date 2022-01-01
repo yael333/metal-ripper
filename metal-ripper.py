@@ -97,7 +97,7 @@ if __name__ == '__main__':
     current = 0
     for track in album.tracks:
         track_path = os.path.join(album_path, f"{str(track.number).zfill(2)} {track.full_title}.mp3")
-        print(f"{str(track.number).zfill(2)} {track.full_title}")
+        print(f"Track: {str(track.number).zfill(2)} {track.full_title}")
         duration = track.duration*1000
         end_track = current + duration
         file[current:end_track].export(track_path, format="mp3")
