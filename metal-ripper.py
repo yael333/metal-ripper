@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import argparse, os, shutil, youtube_dl, metallum, pydub, requests, eyed3, re
+import argparse, os, sys, shutil, youtube_dl, metallum, pydub, requests, eyed3, re
 
 ydl_opts = {
     'format': 'bestaudio/best',
@@ -45,7 +45,7 @@ if __name__ == '__main__':
             split = title.split("-")
             if len(split) < 2:
                 print("[</3] Video title isn't formatted right...")
-                exit()
+                sys.exit()
 
             # split format: {artist} - {album}
             # remove strings in parentheses to avoid stuff like ({release_year})
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
         if not search_results:
             print("[</3] Couldn't find it, quitting......")
-            exit()
+            sys.exit()
         album = search_results[0].get()
         artists = album.bands
 
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     print("[<3] Finished downloading!")
 
     # get the full album file name and load it
-    vid_name = re.sub(r'[/\\:*?"<>|]', '', f"{title}-{video_id}.mp3")
+    vid_name = next(filter(lambda s: video_id in s, os.listdir(".")))
     vid_path = os.path.join(".", vid_name)
     file = pydub.AudioSegment.from_mp3(vid_path)
 
