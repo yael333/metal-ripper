@@ -1,6 +1,8 @@
 # metal-ripper
 A simple python script to download metal albums off YouTube
 
+#### DISCLAIMER USE AT YOUR OWN RISK I'M NOT RESPONSIBLE FOR ANY LEGALITIES
+
 ![Paysage d'Hiver - Paysage d'Hiver on Youtube](https://media.discordapp.net/attachments/710100543917260862/926833905212989450/unknown.png "Paysage d'Hiver - Paysage d'Hiver")
 ![metal-ripper in action](https://cdn.discordapp.com/attachments/710100543917260862/926833481542139934/unknown.png "metal-ripper")
 ![Paysage d'Hiver on ncmpcpp](https://cdn.discordapp.com/attachments/710100543917260862/926833802813272114/unknown.png "ncmpcpp")
