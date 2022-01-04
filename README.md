@@ -1,23 +1,18 @@
-# metal-ripper
-A simple python script to download metal albums off YouTube
+# metal-ripper-discogs
+A fork of metal-ripper that uses discogs as a database. 
 
-#### DISCLAIMER USE AT YOUR OWN RISK I'M NOT RESPONSIBLE FOR ANY LEGALITIES
+## About
+Downloads a provided album from YouTube with metadata and track splits retrieved from Discogs.
 
-![Paysage d'Hiver - Paysage d'Hiver on Youtube](https://media.discordapp.net/attachments/710100543917260862/926833905212989450/unknown.png "Paysage d'Hiver - Paysage d'Hiver")
-![metal-ripper in action](https://cdn.discordapp.com/attachments/710100543917260862/926833481542139934/unknown.png "metal-ripper")
-![Paysage d'Hiver on ncmpcpp](https://cdn.discordapp.com/attachments/710100543917260862/926833802813272114/unknown.png "ncmpcpp")
+## Dependencies and Requirements
+* These packages, using `pip`: youtube_dl, pydub, requests, eyed3, discogs_client.
+* A Discogs account. 
+* A Discogs [user key](https://www.discogs.com/settings/developers). You must enter this in the 'token' value in line 5 of the python file. This is needed to perform a "search" in the discogs API.
 
 ## Usage
-```
-usage: metal-ripper [-h] [-m M] [-d D] [-k] youtube_url
-Rip some metal off youtube.
+`python metal-ripper-discogs.py [youtube album video]`.
+Use the tag -m if you want to use your own Discogs page.
+Use `python metal-ripper-discogs.py -h` for the full options.
 
-positional arguments:
-  youtube_url  the url to the youtube video
-
-options:
-  -h, --help   show this help message and exit
-  -m M         the url to the metal archives page
-  -d D         the directory to download the album into
-  -k           whether to keep the unsplitted album file
-```
+## Note
+Like the original program, this is meant to assist with the retreival and cataloguing of rare, out-of-print music using YouTube and Discogs. I do not encourage the use of this tool to violate copyright.
