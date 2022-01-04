@@ -94,13 +94,20 @@ if __name__ == '__main__':
     # download cover into the new album directory
     with open(os.path.join(album_path, "cover.jpg"), "wb") as f:
         f.write(requests.get(album.images[0]['uri']).content)
-    
+
 
     # split the full album file into the seperate tracks
     # use tracks durations in order to find the correct splits
     current = 0
     trackNum = 1
     for track in album.tracklist:
+
+        # check if track length is empty
+        if track.duration == '':
+            print("[</3] No track lengths on Discogs, exiting....")
+            sys.exit()
+
+
         track_path = os.path.join(album_path, f"{str(track.position).zfill(2)} {track.title}.mp3")
         print(f"Track: {str(track.position).zfill(2)} {track.title}")
         duration = sum([a*b for a,b in zip([60,1], map(int,track.duration.split(':')))])*1000        
@@ -118,7 +125,7 @@ if __name__ == '__main__':
         metadata.tag.track_num = trackNum
         trackNum += 1
         metadata.tag.save()
-    
+
     # delete or move the full album file depending on args
     if keep:
         shutil.move(vid_path, os.path.join(album_path, f"{title}-{video_id}.mp3"))
