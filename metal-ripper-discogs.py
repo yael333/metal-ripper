@@ -2,7 +2,7 @@
 import argparse, os, sys, shutil, youtube_dl, discogs_client, pydub, requests, eyed3, re
 
 # discogs auth for search
-token = 'HYiGcqLUgeQvYHEAlUHyCVPAivFieROlwqgcoMxj'
+token = 'your-token-here'
 discogs = discogs_client.Client('metal-ripper/0.1', user_token=token)
 
 ydl_opts = {
