@@ -58,7 +58,6 @@ if __name__ == '__main__':
 
         print(f"[*] Looking for {y_artist} - {y_album} on Discogs")
         search_results = discogs.search(y_album, type='release', artist=y_artist)
-
         if not search_results:
             print("[</3] Couldn't find it, quitting......")
             sys.exit()
@@ -68,7 +67,11 @@ if __name__ == '__main__':
     # if user supplied discogs url, parse the url in order to find the album id
     else:
         url = discogs_url.split("/")[-1]
-        album = discogs.release(url.split("-")[0])
+        master = discogs.master(url.split("-")[0])
+        if not master:
+            print("[</3] Couldn't find it, quitting......")
+            sys.exit()
+        album = master.main_release
     
     print(f"[<3] Found album {album.title} by {', '.join([artist.name for artist in album.artists])}\n\t Discogs id - {album.id}")
     
