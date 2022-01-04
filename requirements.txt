@@ -1,5 +1,0 @@
-youtube_dl
-python-metallum
-pydub
-requests
-eyed3
