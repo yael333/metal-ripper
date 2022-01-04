@@ -1,5 +1,9 @@
-from __future__ import unicode_literals
-import argparse, os, sys, shutil, youtube_dl, metallum, pydub, requests, eyed3, re
+#from __future__ import unicode_literals
+import argparse, os, sys, shutil, youtube_dl, discogs_client, pydub, requests, eyed3, re
+
+# discogs auth for search
+token = 'HYiGcqLUgeQvYHEAlUHyCVPAivFieROlwqgcoMxj'
+discogs = discogs_client.Client('metal-ripper/0.1', user_token=token)
 
 ydl_opts = {
     'format': 'bestaudio/best',
@@ -20,7 +24,7 @@ if __name__ == '__main__':
                         help='the url to the youtube video')
     parser.add_argument('-m',
                     type=str,
-                    help='the url to the metal archives page')
+                    help='the url to the discogs page')
     parser.add_argument('-d',
                 type=str,
                 help='the directory to download the album into')
@@ -30,12 +34,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     youtube_url = args.youtube_url
-    metal_url = args.m
+    discogs_url = args.m
     directory = args.d if args.d else DEFAULT_DIRECTORY
     keep = args.k
 
-    # if user doesn't supply metal archives url, parse video information to try and find it ourselves
-    if not metal_url:
+    # if user doesn't supply discogs url, parse video information to try and find it ourselves
+    if not discogs_url:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(youtube_url, download=False)
             video = info["entries"][0] if "entries" in info else info
@@ -52,21 +56,21 @@ if __name__ == '__main__':
             y_artist = re.sub("[\(\[].*?[\)\]]", "", split[0]).strip()
             y_album = re.sub("[\(\[].*?[\)\]]", "", "-".join(split[1:])).strip()
 
-        print(f"[*] Looking for {y_artist} - {y_album} on the Metal Archives")
-        search_results = metallum.album_search(y_album, band=y_artist, strict=False)
+        print(f"[*] Looking for {y_artist} - {y_album} on Discogs")
+        search_results = discogs.search(y_album, type='release', artist=y_artist)
 
         if not search_results:
             print("[</3] Couldn't find it, quitting......")
             sys.exit()
-        album = search_results[0].get()
-        artists = album.bands
 
-    # if user supplied metal archives url, parse the url in order to find the album id
+        album = search_results[0]
+
+    # if user supplied discogs url, parse the url in order to find the album id
     else:
-        album = metallum.album_for_id(metal_url.split("/")[-1])
-        artists = album.bands
+        url = discogs_url.split("/")[-1]
+        album = discogs.release(url.split("-")[0])
     
-    print(f"[<3] Found album {album.title} by {', '.join([artist.name for artist in artists])}\n\t URL - https://www.metal-archives.com/{album.url}")
+    print(f"[<3] Found album {album.title} by {', '.join([artist.name for artist in album.artists])}\n\t URL - https://www.discogs.com/{album.id}")
     
     # download youtube video
     print("[*] Starting download...")
@@ -83,35 +87,36 @@ if __name__ == '__main__':
     file = pydub.AudioSegment.from_mp3(vid_path)
 
     # get the new album directory name and create it
-    album_name = re.sub(r'[/\\:*?"<>|]', '', f"{', '.join([artist.name for artist in artists])} - {album.title} ({album.year})").strip()
+    album_name = re.sub(r'[/\\:*?"<>|]', '', f"{', '.join([artist.name for artist in album.artists])} - {album.title} ({album.year})").strip()
     album_path = os.path.join(directory, album_name )
     os.makedirs(album_path, exist_ok=True)
 
     # download cover into the new album directory
     with open(os.path.join(album_path, "cover.jpg"), "wb") as f:
-        f.write(requests.get(album.cover).content)
+        f.write(requests.get(album.images[0]['uri']).content)
     
 
     # split the full album file into the seperate tracks
     # use tracks durations in order to find the correct splits
     current = 0
-    for track in album.tracks:
-        track_path = os.path.join(album_path, f"{str(track.number).zfill(2)} {track.full_title}.mp3")
-        print(f"Track: {str(track.number).zfill(2)} {track.full_title}")
-        duration = track.duration*1000
-        end_track = current + duration
+    trackNum = 1
+    for track in album.tracklist:
+        track_path = os.path.join(album_path, f"{str(track.position).zfill(2)} {track.title}.mp3")
+        print(f"Track: {str(track.position).zfill(2)} {track.title}")
+        duration = sum([a*b for a,b in zip([60,1], map(int,track.duration.split(':')))])*1000        
+        end_track = int(current) + int(duration)
         file[current:end_track].export(track_path, format="mp3")
         current = end_track
 
         # write the metadata into the track
         metadata = eyed3.load(track_path)
-        metadata.tag.title = track.full_title
-        metadata.tag.artist = track.band.name
+        metadata.tag.title = track.title
+        metadata.tag.artist = ', '.join([artist.name for artist in album.artists])
         metadata.tag.album = album.title
         metadata.tag.release_date = album.year
         metadata.tag.recording_date = album.year
-        metadata.tag.track_num = (track.number, next(t.number for t in album.tracks[::-1] if t.disc_number == track.disc_number))
-        metadata.tag.disc_num = (track.disc_number, album.tracks[-1].disc_number)
+        metadata.tag.track_num = trackNum
+        trackNum += 1
         metadata.tag.save()
     
     # delete or move the full album file depending on args
