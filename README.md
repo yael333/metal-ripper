@@ -1,5 +1,5 @@
 # metal-ripper-discogs
-A fork of metal-ripper that uses discogs as a database. Provide it a YouTube video of an album or EP and it will download it and, using Discogs data, split it into properly tagged and titled tracks.
+A fork of [metal-ripper](https://github.com/konata-chan404/metal-ripper) that uses Discogs as a database. Provide it a YouTube video of an album or EP and it will download it and, using Discogs data, split it into properly tagged and titled tracks.
 
 ## Dependencies and Requirements
 * Python.
