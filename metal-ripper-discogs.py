@@ -2,7 +2,7 @@
 import argparse, os, sys, shutil, youtube_dl, discogs_client, pydub, requests, eyed3, re
 
 # discogs auth for search
-token = 'your-token-here'
+token = ''
 discogs = discogs_client.Client('metal-ripper/0.1', user_token=token)
 
 ydl_opts = {
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         url = discogs_url.split("/")[-1]
         album = discogs.release(url.split("-")[0])
     
-    print(f"[<3] Found album {album.title} by {', '.join([artist.name for artist in album.artists])}\n\t URL - https://www.discogs.com/{album.id}")
+    print(f"[<3] Found album {album.title} by {', '.join([artist.name for artist in album.artists])}\n\t Discogs id - {album.id}")
     
     # download youtube video
     print("[*] Starting download...")
