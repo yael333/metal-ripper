@@ -6,6 +6,7 @@ A fork of [metal-ripper](https://github.com/konata-chan404/metal-ripper) that us
 * These packages, using `pip`: youtube_dl, pydub, requests, eyed3, discogs_client.
 * A Discogs account. 
 * A Discogs [user key](https://www.discogs.com/settings/developers). You must enter this in the 'token' value in line 5 of the python file. This is needed to perform a "search" in the discogs API.
+* ffmpeg, for users on Windows or Debian/Ubuntu. Windows users can easily install ffmpeg with a tool like [media-autobuild suite](https://github.com/m-ab-s/media-autobuild_suite) or the [chocolatey package manager](https://chocolatey.org).
 
 ## Usage
 `python metal-ripper-discogs.py [youtube album video]`.
