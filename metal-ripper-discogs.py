@@ -66,6 +66,9 @@ if __name__ == '__main__':
 
     # if user supplied discogs url, parse the url in order to find the album id
     else:
+        if discogs_url.split("/")[-2] == "release":
+            print("[</3] Not master release, please try again with master....")
+            sys.exit()
         url = discogs_url.split("/")[-1]
         master = discogs.master(url.split("-")[0])
         if not master:
