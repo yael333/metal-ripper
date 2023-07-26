@@ -1,5 +1,5 @@
 #from __future__ import unicode_literals
-import argparse, os, sys, shutil, yt_dlp, discogs_client, pydub, requests, eyed3, re
+import argparse, os, sys, shutil, youtube_dl, discogs_client, pydub, requests, eyed3, re
 
 # discogs auth for search
 token = ''
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     # if user doesn't supply discogs url, parse video information to try and find it ourselves
     if not discogs_url:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(youtube_url, download=False)
             video = info["entries"][0] if "entries" in info else info
 
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     
     # download youtube video
     print("[*] Starting download...")
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(youtube_url, download=True)
         video = info["entries"][0] if "entries" in info else info
         title  = video["title"].replace(":", "-")
